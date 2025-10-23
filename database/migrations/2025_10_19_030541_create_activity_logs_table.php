@@ -9,11 +9,14 @@ return new class extends Migration {
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->string('action'); // misal: "ORDER_CREATED", "POUCH_RETURNED"
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('action'); // contoh: QR_GENERATED, ORDER_CREATED
             $table->text('description')->nullable();
-            $table->json('metadata')->nullable();
+            $table->json('meta')->nullable();
+            $table->string('target_role')->nullable(); // cssd, unit, admin
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

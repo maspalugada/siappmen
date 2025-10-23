@@ -6,9 +6,12 @@
     <title>SiAPPMEN - CSSD</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    
+
 </head>
 
 <body class="bg-gray-100 font-sans">
+    
     <div class="flex min-h-screen">
         {{-- SIDEBAR --}}
         <aside class="w-56 bg-green-300 border-r border-green-500">
@@ -36,6 +39,20 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="{{ route('scan.qr') }}"
+                       class="block hover:bg-green-200 px-2 py-1 rounded">
+                       Scan QR Instrumen
+                    </a>
+                </li>
+                <li>
+                     <a href="{{ route('verifikasi.distribusi') }}" 
+                        class="block hover:bg-green-200 px-2 py-1 rounded">
+                        Verifikasi Distribusi Steril
+                     </a>
+                </li>
+
+
 
 
 
@@ -67,11 +84,12 @@
 
             {{-- CONTENT --}}
             <section class="p-6">
-                {{ $slot }}
+                @yield('content')
             </section>
         </main>
     </div>
-
     @livewireScripts
+    @stack('scripts')
+    
 </body>
 </html>

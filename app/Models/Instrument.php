@@ -2,35 +2,38 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Instrument extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'code',
+        'qr_code',
         'name',
         'description',
-        'is_serialized',
         'status',
         'unit_id',
+        'is_serialized',
     ];
 
-    /**
-     * Relasi ke Unit (ruangan)
-     */
-    public function unit()
+    protected static function booted()
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        static::creating(function ($instrument) {
+            if (empty($instrument->qr_code)) {
+                $instrument->qr_code = 'QR-' . strtoupper(Str::random(8));
+            }
+        });
+
+        static::updating(function ($instrument) {
+            if (empty($instrument->qr_code)) {
+                $instrument->qr_code = 'QR-' . strtoupper(Str::random(8));
+            }
+        });
     }
 
-    /**
-     * Relasi ke OrderItem (jika nanti digunakan)
-     */
-    public function orderItems()
+    public function unit()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(Unit::class);
     }
 }

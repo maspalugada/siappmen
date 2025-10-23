@@ -65,7 +65,23 @@ class DistribusiSteril extends Component
         // Update status order
         $this->selectedOrder->update(['status' => 'distributed']);
 
-        // Log aktivitas
+        // Log aktivitas untuk setiap instrument dalam order
+        foreach ($this->selectedOrder->items as $item) {
+            log_activity(
+                'DISTRIBUTION_CREATED',
+                'Distribusi alat steril dikirim ke unit tujuan',
+                [
+                    'instrument_id' => $item->instrument->id,
+                    'instrument' => $item->instrument->name,
+                    'unit_id' => $this->selectedOrder->unit->id,
+                    'unit_name' => $this->selectedOrder->unit->name,
+                    'status' => 'delivered',
+                    'by' => auth()->user()->name ?? 'system',
+                ]
+            );
+        }
+
+        // Log aktivitas lama (untuk kompatibilitas)
         activity('distribution', "Order {$this->selectedOrder->order_no} dikirim ke unit {$this->selectedOrder->unit->name}", $this->selectedOrder->unit_id, 'unit');
 
         session()->flash('message', 'Order berhasil dikirim ke unit.');

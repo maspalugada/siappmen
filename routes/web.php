@@ -9,6 +9,8 @@ use App\Http\Controllers\ScanController;
 use App\Http\Controllers\QRController;
 use App\Http\Controllers\OrderController;
 use App\Http\Livewire\TransaksiCssd;
+use App\Exports\ActivityLogsExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,10 +24,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 // === Dashboard ===
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/scan/qr', \App\Http\Livewire\ScanQr::class)->name('scan.qr');
 
     // Dashboard utama
     Route::get('/dashboard', function () {
@@ -38,7 +42,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // --- Admin ---
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('auth','role:admin')->group(function () {
+        Route::get('/activity/logs', \App\Http\Livewire\ActivityFeed::class)->name('activity.logs');
         Route::get('/qr', [QRController::class, 'index'])->name('qr.index');
         Route::get('/qr/pdf', [QRController::class, 'exportPdf'])->name('qr.pdf');
     });
@@ -59,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/distribusi/steril', DistribusiSteril::class)
              ->middleware(['auth', 'verified'])
              ->name('distribusi.steril');
+
+        Route::get('/verifikasi/distribusi', \App\Http\Livewire\VerifikasiDistribusi::class)
+            ->name('verifikasi.distribusi');
     });
 
     // --- Unit ---
@@ -80,6 +88,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Scan & QR Code routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/scan/qr', \App\Http\Livewire\ScanQr::class)->name('scan.qr');
+    });
+
     Route::get('/scan/return', [ScanController::class, 'showReturnForm'])->name('scan.return');
     Route::post('/scan/return', [ScanController::class, 'returnDirty'])->name('scan.return.post');
     Route::get('/qr', [QRController::class, 'index'])->name('qr.index');
@@ -90,6 +102,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('transaksi.cssd.qr');
     Route::get('/transaksi/cssd/qr-labels/{orderNo}', [\App\Http\Controllers\QRExportController::class, 'exportLabels'])
     ->name('transaksi.cssd.qr.labels');
+
+    Route::get('/activity/export', function () {
+    return Excel::download(new ActivityLogsExport, 'activity_logs.xlsx');
+    })->name('activity.export');
 
 });
 

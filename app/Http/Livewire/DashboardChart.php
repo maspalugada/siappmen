@@ -52,14 +52,15 @@ class DashboardChart extends Component
         ->toArray();
 
         // Statistik per unit (berdasarkan orders)
-        $this->unitStats = Order::select('unit_name',
-            DB::raw('SUM(status = "pending") as pending'),
-            DB::raw('SUM(status = "completed") as completed'),
-            DB::raw('COUNT(*) as total')
-        )
-        ->groupBy('unit_name')
-        ->get()
-        ->toArray();
+        $this->unitStats = Order::join('units', 'orders.unit_id', '=', 'units.id')
+            ->select('units.name as unit_name',
+                DB::raw('SUM(orders.status = "pending") as pending'),
+                DB::raw('SUM(orders.status = "completed") as completed'),
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('units.id', 'units.name')
+            ->get()
+            ->toArray();
     }
 
     public function render()

@@ -31,6 +31,26 @@ class ScanController extends Controller
         if (!$pouch) {
             return response()->json(['error' => 'Pouch tidak ditemukan'], 404);
         }
+        $decoded = base64_decode($request->input('qr_content'));
+
+        [$type, $orderNo, $hash] = explode('|', $decoded);
+
+
+        $expected = hash('sha256', $orderNo . env('APP_KEY'));
+
+
+        if ($hash !== $expected) {
+    
+            return back()->with('error', 'QR Code tidak valid atau telah dimodifikasi!');
+
+        }
+
+// valid → lanjut ambil order
+$order = Order::where('order_no', $orderNo)->first();
+if (!$order) {
+    return back()->with('error', 'Data order tidak ditemukan!');
+}
+
 
         // Buat transaksi pengembalian kotor
         $tx = Transaction::create([
@@ -62,6 +82,26 @@ class ScanController extends Controller
         return response()->json([
             'message' => 'Pengembalian instrumen berhasil dicatat.',
             'transaction' => $tx
+        ]);
+    }
+
+    public function validateQr(Request $request)
+    {
+        $qrCode = $request->input('qr_code');
+
+        $instrument = \App\Models\Instrument::where('qr_code', $qrCode)->first();
+
+        if (!$instrument) {
+            return response()->json(['status' => 'error', 'message' => 'QR Code tidak valid']);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'instrument' => [
+                'name' => $instrument->name,
+                'unit' => $instrument->unit->name ?? '-',
+                'status' => $instrument->status
+            ]
         ]);
     }
 }

@@ -1,5 +1,52 @@
+@php
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+@endphp
+
 <div class="p-6">
     <h2 class="text-2xl font-bold mb-4 text-center"> Master Data Instrumen</h2>
+                <div>
+                <div class="flex justify-between mb-3">
+                    <h2 class="text-xl font-semibold">Master Instrumen</h2>
+                    <a href="{{ route('transaksi.cssd.qr.labels', ['orderNo' => 'ALL']) }}"
+                       class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                        Cetak Label QR
+                    </a>
+                </div>
+                <table class="w-full border-collapse border border-gray-300 text-sm">
+                    <thead class="bg-green-200">
+                        <tr>
+                            <th class="border px-2 py-1">Kode</th>
+                            <th class="border px-2 py-1">QR Code</th>
+                            <th class="border px-2 py-1">Nama</th>
+                            <th class="border px-2 py-1">Deskripsi</th>
+                            <th class="border px-2 py-1">Status</th>
+                            <th class="border px-2 py-1">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($instruments as $item)
+                            <tr class="text-center">
+                                <td class="border px-2 py-1">{{ $item->code }}</td>
+
+                                {{-- QR Code --}}
+                                <td class="border px-2 py-1">
+                                    @if($item->qr_code)
+                                        {!! QrCode::size(60)->generate($item->qr_code) !!}
+                                        <div class="text-xs mt-1 text-gray-600">{{ $item->qr_code }}</div>
+                                    @else
+                                        <span class="text-red-500">Belum ada</span>
+                                    @endif
+                                </td>
+
+                                <td class="border px-2 py-1">{{ $item->name }}</td>
+                                <td class="border px-2 py-1">{{ $item->description }}</td>
+                                <td class="border px-2 py-1 capitalize">{{ $item->status }}</td>
+                                <td class="border px-2 py-1">{{ $item->unit->name ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
     <div class="bg-white shadow-md rounded-lg p-4 mb-6">
         <form wire:submit.prevent="save" class="grid grid-cols-2 gap-4">
@@ -39,7 +86,7 @@
                     <option value="steril">Steril</option>
                 </select>
             </div>
-
+            
             <div class="col-span-2 flex justify-end space-x-2">
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                     {{ $isEdit ? 'Update' : 'Simpan' }}
@@ -48,6 +95,7 @@
                     <button type="button" wire:click="resetForm" class="bg-gray-400 px-4 py-2 rounded">Batal</button>
                 @endif
             </div>
+            
         </form>
     </div>
 

@@ -12,6 +12,24 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        // Backup otomatis setiap hari pukul 02:00
+        $schedule->command('backup:full --cleanup --no-confirm')
+                 ->dailyAt('02:00')
+                 ->withoutOverlapping()
+                 ->runInBackground();
+
+        // Backup database setiap 6 jam
+        $schedule->command('backup:database --cleanup')
+                 ->everySixHours()
+                 ->withoutOverlapping()
+                 ->runInBackground();
+
+        // Backup files setiap 12 jam
+        $schedule->command('backup:files --cleanup')
+                 ->twiceDaily(6, 18) // pukul 06:00 dan 18:00
+                 ->withoutOverlapping()
+                 ->runInBackground();
+
         // $schedule->command('inspire')->hourly();
     }
 

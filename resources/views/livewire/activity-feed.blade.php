@@ -1,5 +1,11 @@
 <div class="bg-white rounded border shadow p-4">
-    <h3 class="text-lg font-semibold mb-2">🕒 Aktivitas Terbaru</h3>
+    <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-semibold">🕒 Aktivitas Terbaru</h3>
+        <a href="{{ route('activity.export') }}"
+           class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+           Ekspor Excel
+        </a>
+    </div>
 
     <ul class="space-y-2 max-h-80 overflow-y-auto">
         @foreach($logs as $log)
