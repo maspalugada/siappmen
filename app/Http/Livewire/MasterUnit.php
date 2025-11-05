@@ -73,6 +73,6 @@ class MasterUnit extends Component
 
     public function render()
     {
-        return view('livewire.master-unit')->layout('layouts.siappmen');
+        return view('livewire.master-unit');
     }
 }

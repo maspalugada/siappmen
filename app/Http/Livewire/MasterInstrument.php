@@ -87,6 +87,6 @@ class MasterInstrument extends Component
 
     public function render()
     {
-        return view('livewire.master-instrument')->layout('layouts.siappmen');
+        return view('livewire.master-instrument');
     }
 }

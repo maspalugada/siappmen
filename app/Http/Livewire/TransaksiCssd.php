@@ -113,6 +113,6 @@ class TransaksiCssd extends Component
 
         return view('livewire.transaksi-cssd', [
             'orders' => $orders
-        ])->layout('layouts.siappmen');
+        ]);
     }
 }
