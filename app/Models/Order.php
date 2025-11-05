@@ -1,11 +1,13 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\{OrderItem, Unit, User};
 
 class Order extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'order_no',
         'unit_id',

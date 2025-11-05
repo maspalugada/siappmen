@@ -29,7 +29,14 @@ Route::get('/', function () {
 // === Dashboard ===
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    Route::get('/scan/qr', \App\Http\Livewire\ScanQr::class)->name('scan.qr');
+
     // Dashboard utama
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Semua role bisa akses dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');

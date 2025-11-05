@@ -13,18 +13,6 @@
 
         <!-- SweetAlert2 -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @if (session()->has('activity'))
-            <script>
-                Swal.fire({
-                    toast: true,
-                    icon: 'info',
-                    title: '{{ session('activity') }}',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2500
-                });
-            </script>
-        @endif
         <script>
         window.addEventListener('activity', event => {
             Swal.fire({
