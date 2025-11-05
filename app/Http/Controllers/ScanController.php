@@ -46,9 +46,15 @@ class ScanController extends Controller
         }
 
 // valid → lanjut ambil order
-$order = Order::where('order_no', $orderNo)->first();
+$order = Order::with('items')->where('order_no', $orderNo)->first();
 if (!$order) {
     return back()->with('error', 'Data order tidak ditemukan!');
+}
+
+// Validasi bahwa pouch instrumen adalah bagian dari order
+$isInstrumentInOrder = $order->items->contains('instrument_id', $pouch->instrument_id);
+if (!$isInstrumentInOrder) {
+    return response()->json(['error' => 'Instrumen ini tidak termasuk dalam order yang dipindai.'], 422);
 }
 
 
