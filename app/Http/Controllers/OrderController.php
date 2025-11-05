@@ -63,7 +63,7 @@ class OrderController extends Controller
             ['order_no' => $order->order_no]
         );
 
-        $this->dispatchBrowserEvent('activity', ['message' => 'Order baru berhasil dibuat!']);
+        session()->flash('activity', 'Order baru berhasil dibuat!');
 
         return redirect()->route('orders.index')->with('success', 'Order berhasil dikirim ke CSSD');
     }
