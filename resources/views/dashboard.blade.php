@@ -128,7 +128,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">Backup Terakhir</span>
-                        <span class="text-xs text-gray-500">{{ now()->subDays(rand(1,7))->format('d/m/Y H:i') }}</span>
+                        <span class="text-xs text-gray-500">{{ get_last_backup_date() }}</span>
                     </div>
                 </div>
             </div>

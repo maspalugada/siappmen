@@ -41,14 +41,14 @@ class ScanController extends Controller
 
         if ($hash !== $expected) {
     
-            return response()->json(['error' => 'QR Code tidak valid atau telah dimodifikasi!'], 422);
+            return back()->with('error', 'QR Code tidak valid atau telah dimodifikasi!');
 
         }
 
 // valid → lanjut ambil order
 $order = Order::where('order_no', $orderNo)->first();
 if (!$order) {
-    return response()->json(['error' => 'Data order tidak ditemukan!'], 404);
+    return back()->with('error', 'Data order tidak ditemukan!');
 }
 
 
