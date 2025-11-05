@@ -29,8 +29,13 @@ class QRExportController extends Controller
     {
         $order = Order::where('order_no', $orderNo)->with('unit')->firstOrFail();
 
+        // Buat konten QR yang aman dengan hash
+        $type = 'order';
+        $hash = hash('sha256', $order->order_no . env('APP_KEY'));
+        $qrContent = base64_encode("{$type}|{$order->order_no}|{$hash}");
+
         // generate SVG lalu encode base64 supaya bisa dimasukkan ke <img>
-        $qrSvg = base64_encode(QrCode::format('svg')->size($qrSize)->generate($order->order_no));
+        $qrSvg = base64_encode(QrCode::format('svg')->size($qrSize)->generate($qrContent));
 
         $pdf = Pdf::loadView($view, [
             'order' => $order,
