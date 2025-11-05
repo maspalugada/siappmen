@@ -20,7 +20,7 @@ class ScanQrTest extends TestCase
         $this->actingAs($user);
 
         Livewire::test(ScanQr::class)
-            ->set('qrCode', $instrument->qr_code)
+            ->call('processQr', ['code' => $instrument->qr_code])
             ->assertSet('result.name', $instrument->name);
     }
 }

@@ -80,7 +80,7 @@ class TransaksiCssd extends Component
             'unit_id' => $unit->id,
             'requested_by' => auth()->id(),
             'date_request' => $this->dateRequest,
-            'date_return' => $this->dateReturn,
+            'date_return_planned' => $this->dateReturn,
             'status' => 'pending'
         ]);
 

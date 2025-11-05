@@ -42,6 +42,10 @@ class DistribusiSteril extends Component
 
     public function sendDistribution()
     {
+        $this->validate([
+            'notes' => 'nullable|string|max:255',
+        ]);
+
         if (!$this->selectedOrder) {
             session()->flash('error', 'Order tidak dipilih.');
             return;
@@ -80,9 +84,6 @@ class DistribusiSteril extends Component
                 ]
             );
         }
-
-        // Log aktivitas lama (untuk kompatibilitas)
-        activity('distribution', "Order {$this->selectedOrder->order_no} dikirim ke unit {$this->selectedOrder->unit->name}", $this->selectedOrder->unit_id, 'unit');
 
         session()->flash('message', 'Order berhasil dikirim ke unit.');
 

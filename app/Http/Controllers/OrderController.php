@@ -39,9 +39,13 @@ class OrderController extends Controller
             'items.*.qty' => 'required|integer|min:1',
         ]);
 
+        if (!Auth::user()->unit_id) {
+            return back()->with('error', 'Anda harus menjadi anggota unit untuk membuat order.');
+        }
+
         $order = Order::create([
-            'order_no' => 'ORD' . strtoupper(Str::random(5)),
-            'unit_id' => Auth::user()->unit_id ?? 1,
+            'order_no' => 'ORD-' . now()->format('YmdHis'),
+            'unit_id' => Auth::user()->unit_id,
             'requested_by' => Auth::id(),
             'date_request' => now(),
             'date_return_planned' => $request->date_return_planned,
@@ -78,6 +82,10 @@ class OrderController extends Controller
     // Ubah status
     public function updateStatus(Request $request, Order $order)
     {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected,completed,cancelled',
+        ]);
+
         $order->update(['status' => $request->status]);
 
         log_activity(

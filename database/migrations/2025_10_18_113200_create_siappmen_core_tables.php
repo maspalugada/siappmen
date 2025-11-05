@@ -63,7 +63,7 @@ return new class extends Migration
                 'distribute',     // distribusi steril
                 'handover'        // serah terima antar petugas
             ]);
-            $table->foreignId('reference_id')->nullable(); // misal order_id
+            $table->foreignId('reference_id')->nullable()->constrained('orders')->nullOnDelete(); // misal order_id
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // aktor (CSSD/unit)
             $table->foreignId('unit_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamp('occurred_at')->nullable();

@@ -13,33 +13,6 @@ class ScanQr extends Component
 
     protected $listeners = ['qrScanned' => 'processQr'];
 
-    public function updatedQrCode($value)
-    {
-        $this->error = '';
-        $this->result = null;
-        // Bersihkan input QR dari spasi dan karakter tidak penting
-        $clean = trim($value);
-        $instrument = Instrument::where('qr_code', $clean)
-            ->orWhere('code', $clean)
-            ->with('unit')
-            ->first();
-        if ($instrument) {
-            $this->result = [
-                'name' => $instrument->name,
-                'unit' => $instrument->unit->name ?? '-',
-                'status' => $instrument->status,
-            ];
-            // Catat ke log aktivitas
-            log_activity('SCAN_SUCCESS', "Alat {$instrument->name} berhasil dipindai", [
-                'instrument_code' => $instrument->code,
-                'qr_code' => $instrument->qr_code,
-                'unit' => $instrument->unit->name ?? '-',
-            ]);
-        } else {
-            $this->error = 'QR tidak dikenali atau alat belum terdaftar.';
-            log_activity('SCAN_FAILED', "QR tidak valid: {$clean}");
-        }
-    }
 
     public function processQr($data)
     {

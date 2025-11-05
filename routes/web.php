@@ -29,14 +29,7 @@ Route::get('/', function () {
 // === Dashboard ===
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/scan/qr', \App\Http\Livewire\ScanQr::class)->name('scan.qr');
-
     // Dashboard utama
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    // Semua role bisa akses dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -86,16 +79,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Scan & QR Code routes
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/scan/qr', \App\Http\Livewire\ScanQr::class)->name('scan.qr');
-    });
-
-    Route::get('/scan/return', [ScanController::class, 'showReturnForm'])->name('scan.return');
-    Route::post('/scan/return', [ScanController::class, 'returnDirty'])->name('scan.return.post');
-    Route::get('/qr', [QRController::class, 'index'])->name('qr.index');
-    Route::get('/qr/pdf', [QRController::class, 'exportPdf'])->name('qr.pdf');
 
     // Route untuk cetak QR Code PDF
     Route::get('/transaksi/cssd/qr/{orderNo}', [\App\Http\Controllers\QRExportController::class, 'export'])

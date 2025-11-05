@@ -31,7 +31,9 @@ class VerifikasiDistribusi extends Component
         $this->alat = $instrument;
 
         // Cari transaksi aktif (belum diverifikasi)
-        $trx = Transaction::where('instrument_id', $instrument->id)
+        $trx = Transaction::whereHas('items', function ($query) use ($instrument) {
+            $query->where('instrument_id', $instrument->id);
+        })
             ->where('status', 'delivered')
             ->latest()
             ->first();
