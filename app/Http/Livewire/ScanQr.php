@@ -18,6 +18,7 @@ class ScanQr extends Component
         $this->error = '';
         $this->result = null;
         // Bersihkan input QR dari spasi dan karakter tidak penting
+        $clean = trim($value);
         $instrument = Instrument::where('qr_code', $clean)
             ->orWhere('code', $clean)
             ->with('unit')
@@ -38,8 +39,6 @@ class ScanQr extends Component
             $this->error = 'QR tidak dikenali atau alat belum terdaftar.';
             log_activity('SCAN_FAILED', "QR tidak valid: {$clean}");
         }
-        
-        $this->processQr(['code' => $value]);
     }
 
     public function processQr($data)
